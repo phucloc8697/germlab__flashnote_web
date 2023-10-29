@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { toast } from 'react-toastify'
 
 const apiUrl = process.env.NEXT_PUBLIC_API_HOST || ''
 
@@ -11,8 +12,15 @@ api.interceptors.request.use((config) => {
   return config
 })
 
-api.interceptors.response.use((response) => {
-  return response.data
-})
+api.interceptors.response.use(
+  (response) => {
+    return response.data
+  },
+  (error) => {
+    const message = `${error.status}: ${error.response.data}`
+    toast.error(message)
+    throw error
+  },
+)
 
 export default api

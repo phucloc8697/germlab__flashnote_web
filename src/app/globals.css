@@ -7,6 +7,7 @@
   --background-start-rgb: 214, 219, 220;
   --background-end-rgb: 255, 255, 255;
   --sidebar-width: 200px;
+  --header-height: 70px;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -23,6 +24,35 @@ body {
     rgb(var(--background-start-rgb));
 }
 
+header {
+  height: var(--header-height);
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1;
+}
+header.atTop {
+  background-color: transparent;
+  transform: translateY(0) !important;
+  box-shadow: none !important;
+}
+header.hide {
+  transform: translateY(-100%);
+}
+
+.sidebar-container {
+  background-color: rgba(0, 0, 0, 0.4);
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  z-index: 2;
+  @media screen and (min-width: 769px) {
+    width: fit-content;
+  }
+}
 .sidebar {
-  width: var(--sidebar-width);
+  width: 70%;
+  @media screen and (min-width: 769px) {
+    width: var(--sidebar-width);
+  }
 }
