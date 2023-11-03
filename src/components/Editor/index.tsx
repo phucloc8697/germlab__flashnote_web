@@ -1,19 +1,10 @@
 import { useNoteStore } from '@/store/useNoteStore'
-import {
-  ChangeEvent,
-  FormEvent,
-  FormEventHandler,
-  LegacyRef,
-  RefObject,
-  useEffect,
-  useRef,
-  useState,
-} from 'react'
+import { ChangeEvent, useEffect, useRef, useState } from 'react'
 import classNames from 'classnames'
 import styles from './styles.module.scss'
 import { useShallow } from 'zustand/react/shallow'
 
-const DEBOUNCE_TIMEOUT = 3000
+const DEBOUNCE_TIMEOUT = 1000
 
 const Editor = () => {
   const currentNote = useNoteStore((state) => state.currentNote)
@@ -46,14 +37,13 @@ const Editor = () => {
   }, [title, content])
 
   const syncNote = (title: string, content: string) => {
-    if (currentNote) {
+    if (currentId.current) {
       timeout.current = setTimeout(() => {
-        updateNote(currentNote.id, { title, content })
+        updateNote(currentId.current, { title, content })
       }, DEBOUNCE_TIMEOUT)
     } else {
       timeout.current = setTimeout(async () => {
-        await createNote({ title, content })
-        getNotes()
+        createNote({ title, content })
       }, DEBOUNCE_TIMEOUT)
     }
   }
@@ -99,6 +89,7 @@ const Editor = () => {
           'hover:shadow-lg focus:shadow-none',
         )}
         placeholder="Enter..."
+        value={content}
         onChange={onContentChange}
       />
     </div>

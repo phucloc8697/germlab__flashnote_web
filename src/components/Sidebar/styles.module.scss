@@ -1,0 +1,9 @@
+.item {
+  .icon {
+    opacity: 0;
+  }
+
+  &:hover .icon {
+    opacity: 1;
+  }
+}

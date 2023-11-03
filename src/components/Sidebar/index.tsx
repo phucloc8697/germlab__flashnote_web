@@ -1,38 +1,49 @@
+import classNames from 'classnames'
+import Image from 'next/image'
+import React, { useEffect, useMemo, useState } from 'react'
+import { useShallow } from 'zustand/react/shallow'
 import useWindowSize from '@/hooks/useWindowSize'
 import { useNoteStore } from '@/store/useNoteStore'
 import { useSidebarStore } from '@/store/useSidebarStore'
-import { Note } from '@/types'
 import { formatDate, isToday } from '@/utils/date'
-import classNames from 'classnames'
-import Image from 'next/image'
-import { useEffect, useMemo, useState } from 'react'
-import { useShallow } from 'zustand/react/shallow'
+import { Note } from '@/types'
+import styles from './styles.module.scss'
 
 const Sidebar = () => {
-  const { getNotes, setCurrentNote } = useNoteStore(useShallow((state) => state))
-  const currentNote = useNoteStore((state) => state.currentNote)
-  const { toggleSidebar } = useSidebarStore(useShallow((state) => state))
-  const sidebarOpen = useSidebarStore((state) => state.open)
+  const { getNotes, setCurrentNote, deleteNote } = useNoteStore(
+    useShallow((state) => ({
+      getNotes: state.getNotes,
+      setCurrentNote: state.setCurrentNote,
+      deleteNote: state.deleteNote,
+    })),
+  )
+  const { currentNote, sidebarNotes } = useNoteStore(
+    useShallow((state) => ({ currentNote: state.currentNote, sidebarNotes: state.sidebarNotes })),
+  )
+  const { toggleSidebar, sidebarOpen } = useSidebarStore(
+    useShallow((state) => ({ toggleSidebar: state.toggleSidebar, sidebarOpen: state.open })),
+  )
   const { isMobile } = useWindowSize()
 
-  const [notes, setNotes] = useState<Note[]>([])
-
   useEffect(() => {
-    getNotes().then((res) => {
-      setNotes(res)
-    })
+    getNotes()
   }, [getNotes])
 
   useEffect(() => {
-    if (!currentNote && notes.length > 0) {
-      const note = notes.find((e) => isToday(e.created_at))
+    if (!currentNote && sidebarNotes.length > 0) {
+      const note = sidebarNotes.find((e) => isToday(e.created_at))
       if (note) setCurrentNote(note)
     }
-  }, [notes, currentNote, setCurrentNote])
+  }, [sidebarNotes, currentNote, setCurrentNote])
 
   const isOpenSidebar = useMemo(() => {
     return !isMobile() || sidebarOpen
   }, [isMobile, sidebarOpen])
+
+  const onDeleteNote = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, item: Note) => {
+    e.stopPropagation()
+    // deleteNote(e.id)
+  }
 
   return (
     <div
@@ -57,19 +68,23 @@ const Sidebar = () => {
           <span className="text-black text-xl font-medium">Flashnote</span>
         </div>
         <div className="flex flex-col p-2">
-          {notes.map((e) => {
+          {sidebarNotes.map((e) => {
             const active = currentNote && e.id === currentNote.id
             return (
               <div
                 key={e.id}
                 className={classNames(
-                  'px-5 py-2 rounded transition duration-300',
+                  styles.item,
+                  'flex items-center px-5 py-2 rounded transition duration-300',
                   'hover:shadow-lg hover:bg-white cursor-pointer',
                   active ? 'text-primary font-semibold' : 'text-secondary',
                 )}
                 onClick={() => setCurrentNote(e)}
               >
-                {formatDate(e.created_at)}
+                <span className="flex-1">{formatDate(e.created_at)}</span>
+                <button onClick={(event) => onDeleteNote(event, e)}>
+                  <i className={classNames(styles.icon, 'bx bx-trash transition duration-300')} />
+                </button>
               </div>
             )
           })}

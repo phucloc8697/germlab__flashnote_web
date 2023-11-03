@@ -1,5 +1,6 @@
 import api from '@/services/axios'
 import { Note } from '@/types'
+import { toast } from 'react-toastify'
 import { create } from 'zustand'
 import { immer } from 'zustand/middleware/immer'
 
@@ -14,20 +15,25 @@ interface UpdateNote {
 }
 
 interface UseNoteStore {
+  sidebarNotes: Note[]
   currentNote?: Note
   saving: boolean
   fetching: boolean
+  deleting: boolean
   setCurrentNote: (note: Note) => void
   getNotes: () => Promise<any>
-  createNote: (data: CreateNote) => Promise<void>
+  createNote: (data: CreateNote) => void
   updateNote: (id: string, data: UpdateNote) => Promise<void>
+  deleteNote: (id: string) => void
 }
 
 export const useNoteStore = create<UseNoteStore>()(
   immer((set) => ({
+    sidebarNotes: [],
     currentNote: undefined,
     saving: false,
     fetching: false,
+    deleting: false,
     setCurrentNote: (note: Note) =>
       set((state) => {
         state.currentNote = note
@@ -35,7 +41,8 @@ export const useNoteStore = create<UseNoteStore>()(
     getNotes: async () => {
       set({ fetching: true })
       try {
-        const response = await api.get('/notes')
+        const response = await api.get<any, Note[]>('/notes')
+        set({ sidebarNotes: response.reverse() })
         return response
       } catch (err) {
         throw err
@@ -43,26 +50,44 @@ export const useNoteStore = create<UseNoteStore>()(
         set({ fetching: false })
       }
     },
-    createNote: async (data: CreateNote) => {
-      set({ saving: true })
-      try {
-        const response = await api.post('/notes', { title: data.title, content: data.content })
-        set({ currentNote: response.data })
-      } finally {
-        set({ saving: false })
-      }
-    },
+    createNote: (data: CreateNote) =>
+      set(async (state) => {
+        state.saving = true
+        set({ saving: true })
+        try {
+          const response = await api.post<any, Note>('/notes', {
+            title: data.title,
+            content: data.content,
+          })
+          state.currentNote = response
+          state.getNotes()
+        } catch (err: any) {
+          toast.error(err)
+        } finally {
+          state.saving = false
+        }
+      }),
     updateNote: async (id: string, data: UpdateNote) => {
       set({ saving: true })
       try {
-        const response = await api.patch(`/notes/${id}`, {
+        await api.patch<any, boolean>(`/notes/${id}`, {
           title: data.title,
           content: data.content,
         })
-        set({ currentNote: response.data })
       } finally {
         set({ saving: false })
       }
     },
+    deleteNote: (id: string) =>
+      set(async (state) => {
+        state.deleting = true
+        try {
+          await api.delete<any, boolean>(`/notes/${id}`)
+          if (state.currentNote?.id === id) state.currentNote = undefined
+          state.getNotes()
+        } finally {
+          state.deleting = false
+        }
+      }),
   })),
 )
