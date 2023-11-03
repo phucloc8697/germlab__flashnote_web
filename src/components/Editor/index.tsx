@@ -8,7 +8,7 @@ const DEBOUNCE_TIMEOUT = 1000
 
 const Editor = () => {
   const currentNote = useNoteStore((state) => state.currentNote)
-  const { getNotes, createNote, updateNote } = useNoteStore(useShallow((state) => state))
+  const { createNote, updateNote } = useNoteStore(useShallow((state) => state))
 
   const [title, setTitle] = useState('')
   const [content, setContent] = useState('')
@@ -20,6 +20,10 @@ const Editor = () => {
       setTitle(currentNote.title)
       setContent(currentNote.content)
       currentId.current = currentNote.id
+    } else if (currentNote) {
+      setTitle('')
+      setContent('')
+      currentId.current = ''
     }
   }, [currentNote])
 
@@ -37,9 +41,9 @@ const Editor = () => {
   }, [title, content])
 
   const syncNote = (title: string, content: string) => {
-    if (currentId.current) {
+    if (currentNote) {
       timeout.current = setTimeout(() => {
-        updateNote(currentId.current, { title, content })
+        updateNote(currentNote.id, { title, content })
       }, DEBOUNCE_TIMEOUT)
     } else {
       timeout.current = setTimeout(async () => {

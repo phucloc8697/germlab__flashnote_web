@@ -8,6 +8,7 @@ import { useSidebarStore } from '@/store/useSidebarStore'
 import { formatDate, isToday } from '@/utils/date'
 import { Note } from '@/types'
 import styles from './styles.module.scss'
+import ConfirmDeleteModal from '../ConfirmDeleteModal'
 
 const Sidebar = () => {
   const { getNotes, setCurrentNote, deleteNote } = useNoteStore(
@@ -24,6 +25,11 @@ const Sidebar = () => {
     useShallow((state) => ({ toggleSidebar: state.toggleSidebar, sidebarOpen: state.open })),
   )
   const { isMobile } = useWindowSize()
+
+  const [confirmModal, setConfirmModal] = useState({
+    open: false,
+    data: undefined as Note | undefined,
+  })
 
   useEffect(() => {
     getNotes()
@@ -42,7 +48,11 @@ const Sidebar = () => {
 
   const onDeleteNote = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, item: Note) => {
     e.stopPropagation()
-    // deleteNote(e.id)
+    setConfirmModal({ open: true, data: item })
+  }
+
+  const handleDeleteNote = (item: Note | undefined) => {
+    if (item) deleteNote(item.id)
   }
 
   return (
@@ -52,7 +62,6 @@ const Sidebar = () => {
         !isOpenSidebar && 'pointer-events-none',
         isOpenSidebar && 'opacity-100',
       )}
-      onClick={() => isMobile() && toggleSidebar()}
     >
       <div
         className={classNames(
@@ -79,10 +88,16 @@ const Sidebar = () => {
                   'hover:shadow-lg hover:bg-white cursor-pointer',
                   active ? 'text-primary font-semibold' : 'text-secondary',
                 )}
-                onClick={() => setCurrentNote(e)}
+                onClick={() => {
+                  setCurrentNote(e)
+                  toggleSidebar()
+                }}
               >
                 <span className="flex-1">{formatDate(e.created_at)}</span>
-                <button onClick={(event) => onDeleteNote(event, e)}>
+                <button
+                  className={classNames(styles.deleteButton)}
+                  onClick={(event) => onDeleteNote(event, e)}
+                >
                   <i className={classNames(styles.icon, 'bx bx-trash transition duration-300')} />
                 </button>
               </div>
@@ -90,6 +105,11 @@ const Sidebar = () => {
           })}
         </div>
       </div>
+      <ConfirmDeleteModal
+        open={confirmModal.open}
+        onConfirm={() => handleDeleteNote(confirmModal.data)}
+        onClose={() => setConfirmModal({ open: false, data: undefined })}
+      />
     </div>
   )
 }

@@ -32,7 +32,7 @@ const Header = () => {
   return (
     <header id="header" className="flex items-center justify-between shadow-sm md:shadow-none px-4">
       <div>
-        <button className="md:hidden rounded p-2 text-xl" onClick={toggleSidebar}>
+        <button className="md:hidden rounded p-2 text-3xl" onClick={toggleSidebar}>
           <i className="bx bx-menu" />
         </button>
       </div>

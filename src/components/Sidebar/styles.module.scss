@@ -1,9 +1,11 @@
 .item {
-  .icon {
-    opacity: 0;
-  }
+  @media screen and (min-width: 769px) {
+    .deleteButton {
+      opacity: 0;
+    }
 
-  &:hover .icon {
-    opacity: 1;
+    &:hover .deleteButton {
+      opacity: 1;
+    }
   }
 }
