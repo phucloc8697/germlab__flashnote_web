@@ -7,9 +7,17 @@ import styles from './styles.module.scss'
 import classNames from 'classnames'
 import { useNoteStore } from '@/store/useNoteStore'
 import Spinner from '@/components/Spinner'
+import { useAuthStore } from '@/store/useAuthStore'
+import { redirect } from 'next/navigation'
+import { useEffect } from 'react'
 
 export default function Home() {
   const saving = useNoteStore((state) => state.saving)
+  const isAuth = useAuthStore((state) => state.isAuth)
+
+  useEffect(() => {
+    if (!isAuth()) redirect('/login')
+  }, [isAuth])
 
   return (
     <main className="min-h-screen flex">

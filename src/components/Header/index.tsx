@@ -1,9 +1,11 @@
+import { useAuthStore } from '@/store/useAuthStore'
 import { useSidebarStore } from '@/store/useSidebarStore'
 import React, { useEffect, useRef, useState } from 'react'
 import { useShallow } from 'zustand/react/shallow'
 
 const Header = () => {
   const toggleSidebar = useSidebarStore(useShallow((state) => state.toggleSidebar))
+  const email = useAuthStore((state) => state.email)
 
   const prevScrollPos = useRef(0)
 
@@ -36,7 +38,9 @@ const Header = () => {
           <i className="bx bx-menu" />
         </button>
       </div>
-      <div className="flex items-center justify-end" />
+      <div className="flex items-center justify-end">
+        <span>Logged in as{email}</span>
+      </div>
     </header>
   )
 }

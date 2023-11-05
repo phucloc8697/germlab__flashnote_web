@@ -25,6 +25,7 @@ body {
 }
 
 header {
+  width: calc(100vw - var(--sidebar-width));
   height: var(--header-height);
   position: fixed;
   top: 0;

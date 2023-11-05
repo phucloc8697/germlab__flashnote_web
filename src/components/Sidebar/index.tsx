@@ -9,8 +9,10 @@ import { formatDate, isToday } from '@/utils/date'
 import { Note } from '@/types'
 import styles from './styles.module.scss'
 import ConfirmDeleteModal from '../ConfirmDeleteModal'
+import { useAuthStore } from '@/store/useAuthStore'
 
 const Sidebar = () => {
+  const isAuth = useAuthStore((state) => state.isAuth)
   const { getNotes, setCurrentNote, deleteNote } = useNoteStore(
     useShallow((state) => ({
       getNotes: state.getNotes,
@@ -32,8 +34,8 @@ const Sidebar = () => {
   })
 
   useEffect(() => {
-    getNotes()
-  }, [getNotes])
+    if (isAuth()) getNotes()
+  }, [isAuth, getNotes])
 
   useEffect(() => {
     if (!currentNote && sidebarNotes.length > 0) {
@@ -66,7 +68,7 @@ const Sidebar = () => {
       <div
         className={classNames(
           'sidebar',
-          'h-full bg-accent py-3 pointer-events-auto',
+          'h-full bg-primary py-3 pointer-events-auto',
           ' transition duration-300',
           !isOpenSidebar && '-translate-x-full md:translate-x-0',
           isOpenSidebar && 'translate-x-0',
@@ -86,7 +88,7 @@ const Sidebar = () => {
                   styles.item,
                   'flex items-center px-5 py-2 rounded transition duration-300',
                   'hover:shadow-lg hover:bg-white cursor-pointer',
-                  active ? 'text-primary font-semibold' : 'text-secondary',
+                  active ? 'text-dark font-semibold' : 'text-secondary',
                 )}
                 onClick={() => {
                   setCurrentNote(e)

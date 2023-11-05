@@ -17,10 +17,11 @@ const config: Config = {
         'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
       },
       colors: {
-        primary: '#101f28',
+        primary: '#f6f6af',
         secondary: '#8e8a88',
-        accent: '#f6f6af',
+        accent: '#398EA4',
         main: '#f9f9f9',
+        dark: '#101f28',
       },
     },
   },
