@@ -10,9 +10,11 @@ import { Note } from '@/types'
 import styles from './styles.module.scss'
 import ConfirmDeleteModal from '../ConfirmDeleteModal'
 import { useAuthStore } from '@/store/useAuthStore'
+import MenuItem from './MenuItem'
 
 const Sidebar = () => {
   const isAuth = useAuthStore((state) => state.isAuth)
+  const logout = useAuthStore((state) => state.logout)
   const { getNotes, setCurrentNote, deleteNote } = useNoteStore(
     useShallow((state) => ({
       getNotes: state.getNotes,
@@ -59,6 +61,7 @@ const Sidebar = () => {
 
   return (
     <div
+      onClick={toggleSidebar}
       className={classNames(
         'sidebar-container transition duration-300 opacity-0',
         !isOpenSidebar && 'pointer-events-none',
@@ -66,8 +69,9 @@ const Sidebar = () => {
       )}
     >
       <div
+        onClick={(e) => e.stopPropagation()}
         className={classNames(
-          'sidebar',
+          'sidebar flex flex-col',
           'h-full bg-primary py-3 pointer-events-auto',
           ' transition duration-300',
           !isOpenSidebar && '-translate-x-full md:translate-x-0',
@@ -78,33 +82,33 @@ const Sidebar = () => {
           <Image width={25} height={25} alt="" src="logo.png" />
           <span className="text-black text-xl font-medium">Flashnote</span>
         </div>
-        <div className="flex flex-col p-2">
+        <div className="flex flex-1 flex-col p-2">
           {sidebarNotes.map((e) => {
             const active = currentNote && e.id === currentNote.id
             return (
-              <div
+              <MenuItem
                 key={e.id}
-                className={classNames(
-                  styles.item,
-                  'flex items-center px-5 py-2 rounded transition duration-300',
-                  'hover:shadow-lg hover:bg-white cursor-pointer',
-                  active ? 'text-dark font-semibold' : 'text-secondary',
-                )}
+                text={formatDate(e.created_at)}
+                active={!!active}
                 onClick={() => {
                   setCurrentNote(e)
                   toggleSidebar()
                 }}
-              >
-                <span className="flex-1">{formatDate(e.created_at)}</span>
-                <button
-                  className={classNames(styles.deleteButton)}
-                  onClick={(event) => onDeleteNote(event, e)}
-                >
-                  <i className={classNames(styles.icon, 'bx bx-trash transition duration-300')} />
-                </button>
-              </div>
+                onDelete={(event) => onDeleteNote(event, e)}
+              />
             )
           })}
+        </div>
+        <div className="p-5">
+          <MenuItem
+            text={
+              <div className="flex items-center gap-2">
+                <i className="bx bx-log-out" />
+                Logout
+              </div>
+            }
+            onClick={() => logout()}
+          />
         </div>
       </div>
       <ConfirmDeleteModal
