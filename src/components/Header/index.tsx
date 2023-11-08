@@ -38,8 +38,10 @@ const Header = () => {
           <i className="bx bx-menu" />
         </button>
       </div>
-      <div className="flex items-center justify-end">
-        <span>Logged in as{email}</span>
+      <div className="flex items-center justify-end text-sm">
+        <span>
+          Logged in as <strong className="text-accent">{email}</strong>
+        </span>
       </div>
     </header>
   )

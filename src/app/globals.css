@@ -25,12 +25,14 @@ body {
 }
 
 header {
-  width: calc(100vw - var(--sidebar-width));
+  width: 100%;
   height: var(--header-height);
   position: fixed;
   top: 0;
-  width: 100%;
   z-index: 1;
+  @media screen and (min-width: 769px) {
+    width: calc(100vw - var(--sidebar-width));
+  }
 }
 header.atTop {
   background-color: transparent;

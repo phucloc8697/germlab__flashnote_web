@@ -11,11 +11,14 @@ interface UseAuthStore {
   accessToken: string
   refreshToken: string
   isAuth: () => boolean
+  updateCredential: ({ idToken }: { idToken: string }) => void
   signUp: (email: string) => Promise<void>
   login: (email: string) => Promise<any>
   verifyLogin: (code: string) => Promise<void>
   logout: () => void
 }
+
+export const AUTH_STORAGE = 'flastnote-auth'
 
 export const useAuthStore = create<UseAuthStore>()(
   persist(
@@ -29,6 +32,9 @@ export const useAuthStore = create<UseAuthStore>()(
         isAuth: () => {
           return !!get().accessToken
         },
+        updateCredential: ({ idToken }) => {
+          set({ accessToken: idToken })
+        },
         signUp: async (email: string) => {
           const res = await api.post<any, any>('/sign-up', { email })
           const session = res.Session
@@ -39,9 +45,13 @@ export const useAuthStore = create<UseAuthStore>()(
             const res = await api.post<any, any>('/login', { email })
             const session = res.Session
             set({ session, email })
+            toast.success(`We sent an authorization code to ${email}`)
             return res
           } catch (err: any) {
-            toast.error(err)
+            if (err.data && err.data.name === 'UserNotFoundException') {
+              return toast.error('User not found')
+            }
+            toast.error(err.message || err)
           }
         },
         verifyLogin: async (code: string) => {
@@ -50,16 +60,17 @@ export const useAuthStore = create<UseAuthStore>()(
             session: get().session,
             code,
           })
-          const { AccessToken, IdToken, RefreshToken } = res.AuthenticationResult
-          set({ accessToken: AccessToken, refreshToken: RefreshToken, session: '' })
+          const { IdToken, RefreshToken } = res.AuthenticationResult
+          set({ accessToken: IdToken, refreshToken: RefreshToken, session: '' })
         },
         logout: () => {
           set({ user: null, email: '', session: '', accessToken: '', refreshToken: '' })
+          window.location.href = '/'
         },
       })),
     ),
     {
-      name: 'flastnote-auth',
+      name: AUTH_STORAGE,
       partialize: (state) => ({
         user: state.user,
         email: state.email,

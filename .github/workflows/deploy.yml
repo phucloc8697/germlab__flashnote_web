@@ -2,7 +2,8 @@ name: germlab__flashnote_web
 
 on:
   push:
-    branches: master
+    tags:
+      - 'production-v*'
 
 permissions:
   id-token: write # This is required for requesting the JWT
