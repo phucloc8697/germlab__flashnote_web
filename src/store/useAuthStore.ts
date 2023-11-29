@@ -37,8 +37,7 @@ export const useAuthStore = create<UseAuthStore>()(
         },
         signUp: async (email: string) => {
           const res = await api.post<any, any>('/sign-up', { email })
-          const session = res.Session
-          set({ session, email })
+          toast.success(res)
         },
         login: async (email: string) => {
           try {
