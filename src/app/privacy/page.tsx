@@ -143,7 +143,7 @@ const PrivacyPage = () => {
             <h2 className="text-lg font-semibold">Contact Us</h2>
             <p>
               If you have any questions or suggestions about my Privacy Policy, do not hesitate to
-              contact me at{' '}
+              contact me at =
               <a className="text-accent underline" href="mailto://phucloc8697@gmail.com">
                 phucloc8697@gmail.com
               </a>

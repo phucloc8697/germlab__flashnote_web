@@ -3,17 +3,13 @@
 import Spinner from '@/components/Spinner'
 import { useAuthStore } from '@/store/useAuthStore'
 import classNames from 'classnames'
-import Link from 'next/link'
-import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { useShallow } from 'zustand/react/shallow'
 
-const SignupPage = () => {
-  const router = useRouter()
-  const { isAuth, signUp } = useAuthStore(
+const DeleteAccountPage = () => {
+  const { deleteAccount } = useAuthStore(
     useShallow((state) => ({
-      signUp: state.signUp,
-      isAuth: state.isAuth,
+      deleteAccount: state.deleteAccount,
     })),
   )
   const [email, setEmail] = useState('')
@@ -22,13 +18,11 @@ const SignupPage = () => {
   const onSubmit = async () => {
     try {
       setSubmitting(true)
-      await signUp(email)
+      await deleteAccount(email)
     } finally {
       setSubmitting(false)
     }
   }
-
-  if (isAuth()) router.replace('/')
 
   return (
     <div className="container w-screen h-screen flex items-center justify-center mx-auto">
@@ -38,7 +32,14 @@ const SignupPage = () => {
       >
         <div className="w-full bg-primary" style={{ height: 60 }} />
         <div className="flex flex-col px-10 py-5 gap-5">
-          <h1 className="text-2xl mb-4 text-center">Sign Up to Flashnote</h1>
+          <h1 className="text-2xl mb-4 text-center">Request to Delete</h1>
+          <p className="text-sm">
+            We will delete all the data belongs to your account and{' '}
+            <strong className="text-red-500">this deletion can not be undone</strong>.
+          </p>
+          <p className="text-sm">
+            After submit your request, it’ll take up to 3 working days to proceed.
+          </p>
           <div className="flex flex-col gap-2">
             <label className="text-sm text-secondary">Email</label>
             <input
@@ -53,19 +54,16 @@ const SignupPage = () => {
             disabled={submitting}
             className={classNames(
               'flex items-center justify-center gap-2',
-              'bg-primary px-5 py-3 rounded font-medium text-sm',
+              'bg-red-500 px-5 py-3 rounded font-medium text-sm text-white',
             )}
           >
-            {submitting ? <Spinner /> : <i className="bx bx-user-plus text-xl" />}
-            Create Account
+            {submitting ? <Spinner /> : <i className="bx bx-user-minus text-xl" />}
+            Delete Account
           </button>
-          <Link className="text-accent text-sm hover:underline text-center" href="/login">
-            Already have an account? Login here
-          </Link>
         </div>
       </div>
     </div>
   )
 }
 
-export default SignupPage
+export default DeleteAccountPage

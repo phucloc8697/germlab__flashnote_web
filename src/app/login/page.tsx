@@ -50,7 +50,7 @@ const LoginPage = () => {
       >
         <div className="w-full bg-primary" style={{ height: 60 }} />
         <div className="flex flex-col px-10 py-5 gap-5">
-          <h1 className="text-2xl mb-5 text-center">
+          <h1 className="text-2xl mb-4 text-center">
             {isPendingVerify ? 'Enter your code' : 'Login to Flashnote'}
           </h1>
           <div className="flex flex-col gap-2">

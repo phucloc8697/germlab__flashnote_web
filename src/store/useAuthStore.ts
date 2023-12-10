@@ -16,6 +16,7 @@ interface UseAuthStore {
   login: (email: string) => Promise<any>
   verifyLogin: (code: string) => Promise<void>
   logout: () => void
+  deleteAccount: (email: string) => Promise<void>
 }
 
 export const AUTH_STORAGE = 'flastnote-auth'
@@ -65,6 +66,9 @@ export const useAuthStore = create<UseAuthStore>()(
         logout: () => {
           set({ user: null, email: '', session: '', accessToken: '', refreshToken: '' })
           window.location.href = '/'
+        },
+        deleteAccount: async (email: string) => {
+          return
         },
       })),
     ),
