@@ -2,12 +2,10 @@
 
 import { useAuthStore } from '@/store/useAuthStore'
 import { useSidebarStore } from '@/store/useSidebarStore'
-import Image from 'next/image'
-import Link from 'next/link'
 import React, { useEffect, useRef, useState } from 'react'
 import { useShallow } from 'zustand/react/shallow'
 
-const Header = () => {
+const EditorHeader = () => {
   const toggleSidebar = useSidebarStore(useShallow((state) => state.toggleSidebar))
   const email = useAuthStore((state) => state.email)
 
@@ -36,27 +34,19 @@ const Header = () => {
   }, [])
 
   return (
-    <header id="header" className="w-full bg-primary shadow-sm md:shadow-none">
-      <div className="container flex items-center justify-between mx-auto">
-        <div>
-          <button className="md:hidden rounded p-2 text-3xl" onClick={toggleSidebar}>
-            <i className="bx bx-menu" />
-          </button>
-          <Link className="flex items-center gap-2 p-5" href="/">
-            <Image width={25} height={25} alt="" src="logo.png" />
-            <span className="text-black text-xl font-medium">Flashnote</span>
-          </Link>
-        </div>
-        <div className="flex items-center justify-end text-sm">
-          {email && (
-            <span>
-              Logged in as <strong className="text-accent">{email}</strong>
-            </span>
-          )}
-        </div>
+    <header id="header" className="flex items-center justify-between shadow-sm md:shadow-none px-4">
+      <div>
+        <button className="md:hidden rounded p-2 text-3xl" onClick={toggleSidebar}>
+          <i className="bx bx-menu" />
+        </button>
+      </div>
+      <div className="flex items-center justify-end text-sm">
+        <span>
+          Logged in as <strong className="text-accent">{email}</strong>
+        </span>
       </div>
     </header>
   )
 }
 
-export default Header
+export default EditorHeader

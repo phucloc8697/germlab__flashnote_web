@@ -33,7 +33,7 @@ const SignupPage = () => {
   if (isAuth()) router.replace('/')
 
   return (
-    <div className="container w-screen h-screen flex items-center justify-center">
+    <div className="container w-screen h-screen flex items-center justify-center mx-auto">
       <div
         className={classNames('bg-white shadow-sm rounded-xl overflow-hidden')}
         style={{ width: 400 }}

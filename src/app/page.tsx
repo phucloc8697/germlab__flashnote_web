@@ -1,7 +1,7 @@
 'use client'
 
 import Editor from '@/components/Editor'
-import Header from '@/components/Header'
+import EditorHeader from '@/components/EditorHeader'
 import Sidebar from '@/components/Sidebar'
 import styles from './styles.module.scss'
 import classNames from 'classnames'
@@ -23,7 +23,7 @@ export default function Home() {
     <main className="min-h-screen flex">
       <Sidebar />
       <div className={classNames('flex-1 flex flex-col bg-main', styles.content)}>
-        <Header />
+        <EditorHeader />
         <div className={classNames('flex items-center justify-end px-4 py-2', styles.statusBar)}>
           {saving && (
             <div className="flex items-center gap-2 text-xs text-secondary font-medium">
