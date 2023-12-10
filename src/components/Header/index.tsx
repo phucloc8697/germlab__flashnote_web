@@ -38,7 +38,7 @@ const Header = () => {
   return (
     <header id="header" className="w-full bg-primary shadow-sm md:shadow-none">
       <div className="container flex items-center justify-between mx-auto">
-        <div>
+        <div className="flex items-center">
           <button className="md:hidden rounded p-2 text-3xl" onClick={toggleSidebar}>
             <i className="bx bx-menu" />
           </button>

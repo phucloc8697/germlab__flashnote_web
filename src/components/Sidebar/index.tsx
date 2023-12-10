@@ -78,7 +78,7 @@ const Sidebar = () => {
         )}
       >
         <div className="flex items-center gap-2 p-5">
-          <Image width={25} height={25} alt="" src="logo.png" />
+          <Image width={25} height={25} alt="" src="/logo.png" />
           <span className="text-black text-xl font-medium">Flashnote</span>
         </div>
         <div className="flex flex-1 flex-col p-2">

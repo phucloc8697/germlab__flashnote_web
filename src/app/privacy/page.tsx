@@ -5,7 +5,7 @@ const PrivacyPage = () => {
     <main className="min-h-screen flex">
       <div className="flex-1 flex flex-col bg-main content">
         <Header />
-        <div className="container w-screen min-h-screen flex flex-col mx-auto py-20 gap-12">
+        <div className="container w-screen min-h-screen flex flex-col mx-auto py-10 md:py-20 gap-12 px-4 md:px-0">
           <h1 className="text-center text-4xl">Privacy Policy</h1>
           <div className="flex flex-col gap-4">
             <p>

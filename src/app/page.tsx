@@ -8,16 +8,18 @@ import classNames from 'classnames'
 import { useNoteStore } from '@/store/useNoteStore'
 import Spinner from '@/components/Spinner'
 import { useAuthStore } from '@/store/useAuthStore'
-import { redirect } from 'next/navigation'
+import { redirect, usePathname } from 'next/navigation'
 import { useEffect } from 'react'
+import Link from 'next/link'
 
 export default function Home() {
+  const pathname = usePathname()
   const saving = useNoteStore((state) => state.saving)
   const isAuth = useAuthStore((state) => state.isAuth)
 
   useEffect(() => {
-    if (!isAuth()) redirect('/login')
-  }, [isAuth])
+    if (!isAuth() && pathname === '/') redirect('/login')
+  }, [isAuth, pathname])
 
   return (
     <main className="min-h-screen flex">
@@ -33,6 +35,11 @@ export default function Home() {
           )}
         </div>
         <Editor />
+        <div className="flex items-center justify-end px-4 py-2">
+          <Link href="/privacy" className="text-sm text-secondary font-medium">
+            Privacy Policy
+          </Link>
+        </div>
       </div>
     </main>
   )
